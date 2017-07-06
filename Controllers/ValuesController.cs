@@ -33,7 +33,7 @@ namespace librarysample.Controllers
         [HttpPost]
         public IActionResult Post([FromBody]Book book)
         {
-            if (string.IsNullOrWhiteSpace(book.Name) || string.IsNullOrWhiteSpace(book.Author)|| string.IsNullOrWhiteSpace(book.ISBN))
+            if (string.IsNullOrWhiteSpace(book.Name) || string.IsNullOrWhiteSpace(book.Author) || string.IsNullOrWhiteSpace(book.ISBN))
                 return BadRequest();
             book.ID = _nextId;
             _nextId++;
@@ -43,9 +43,10 @@ namespace librarysample.Controllers
 
 
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        [HttpPatch("{id}")]
+        public void Patch(int id, [FromBody]Book book)
         {
+            // not yet implemented
         }
 
         // DELETE api/values/5
@@ -56,6 +57,30 @@ namespace librarysample.Controllers
             if (removed == 0)
                 return NotFound();
             return Ok();
+        }
+
+        [HttpPost("fib")]
+        public IActionResult Fibonacci([FromBody]int amount)
+        {
+            if (amount <= 0)
+                return BadRequest();
+
+            long result = 0;
+            if (amount <= 2)
+            {
+                result = 1;
+            }
+            else
+            {
+                long prev = 1;
+                for (int i = 0; i < amount; i++)
+                {
+                    long t = result;
+                    result = result + prev;
+                    prev = t;
+                }
+            }
+            return new OkObjectResult(result);
         }
     }
 }
