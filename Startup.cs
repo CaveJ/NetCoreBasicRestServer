@@ -28,6 +28,11 @@ namespace librarysample
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowBookEditor",
+                    builder => builder.WithOrigins("http://localhost:3000"));
+            });
             services.AddMvc();
         }
 
@@ -37,6 +42,7 @@ namespace librarysample
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseCors("AllowBookEditor");
             app.UseMvc();
         }
     }

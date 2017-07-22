@@ -11,8 +11,21 @@ namespace librarysample.Controllers
     [Route("api/[controller]")]
     public class BooksController : Controller
     {
-        private static readonly List<Book> _books = new List<Book>();
-        private int _nextId = 1;
+        private static readonly List<Book> _books;
+
+        static BooksController()
+        {
+            _books = new Book[] {
+              new Book(){ Name= "Rumo & die Wunder im Dunkeln", ID= 1, Author="Walther Moers", ISBN="" },
+              new Book(){Name="Die dreizehneinhalb Leben des Käpt'n Blaubär",ID=2,Author="Walther Moers",ISBN=""},
+              new Book(){Name="Die Stadt der träumenden Bücher",ID=3,Author="Walther Moers",ISBN=""},
+              new Book(){Name="Das Labyrinth der träumenden Bücher",ID=4,Author="Walther Moers",ISBN=""},
+              new Book(){Name="Der Schrecksenmeister",ID=5,Author="Walther Moers",ISBN=""},
+              new Book(){Name="Ensel und Krete",ID=6,Author="Walther Moers",ISBN=""}
+            }.ToList();
+        }
+
+        private int _nextId = 7;
 
         [HttpGet]
         public IEnumerable<string> Get()
