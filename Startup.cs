@@ -31,7 +31,7 @@ namespace librarysample
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowBookEditor",
-                    builder => builder.WithOrigins("http://localhost:3000"));
+                    builder => builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader());
             });
             services.AddMvc();
         }

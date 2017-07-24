@@ -16,21 +16,24 @@ namespace librarysample.Controllers
         static BooksController()
         {
             _books = new Book[] {
-              new Book(){ Name= "Rumo & die Wunder im Dunkeln", ID= 1, Author="Walther Moers", ISBN="" },
-              new Book(){Name="Die dreizehneinhalb Leben des Käpt'n Blaubär",ID=2,Author="Walther Moers",ISBN=""},
-              new Book(){Name="Die Stadt der träumenden Bücher",ID=3,Author="Walther Moers",ISBN=""},
-              new Book(){Name="Das Labyrinth der träumenden Bücher",ID=4,Author="Walther Moers",ISBN=""},
-              new Book(){Name="Der Schrecksenmeister",ID=5,Author="Walther Moers",ISBN=""},
-              new Book(){Name="Ensel und Krete",ID=6,Author="Walther Moers",ISBN=""}
+              new Book(){ Name= "Rumo & die Wunder im Dunkeln", ID= 1, Author="Walther Moers", ISBN="abc" },
+              new Book(){Name="Die dreizehneinhalb Leben des Käpt'n Blaubär",ID=2,Author="Walther Moers",ISBN="abc"},
+              new Book(){Name="Die Stadt der träumenden Bücher",ID=3,Author="Walther Moers",ISBN="fr"},
+              new Book(){Name="Das Labyrinth der träumenden Bücher",ID=4,Author="Walther Moers",ISBN="wef"},
+              new Book(){Name="Der Schrecksenmeister",ID=5,Author="Walther Moers",ISBN="sdfds"},
+              new Book(){Name="Ensel und Krete",ID=6,Author="Walther Moers",ISBN="sdfds"}
             }.ToList();
         }
 
         private int _nextId = 7;
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<string> Get([FromQuery]string name)
         {
-            return _books.Select(book => JsonConvert.SerializeObject(book));
+            if (name == null)
+                return _books.Select(book => JsonConvert.SerializeObject(book));
+            else
+                return _books.Where(book => book.Name.Contains(name)).Select(book => JsonConvert.SerializeObject(book));
         }
 
         [HttpGet("{id}")]
@@ -62,12 +65,31 @@ namespace librarysample.Controllers
             // not yet implemented
         }
 
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody]Book book)
+        {
+            if (string.IsNullOrWhiteSpace(book.Name)
+            || string.IsNullOrWhiteSpace(book.Author)
+            || string.IsNullOrWhiteSpace(book.ISBN)
+            || book.ID == -1)
+                return BadRequest();
+
+            Book b = _books.Find(element => element.ID == book.ID);
+            if (b == null)
+                return NotFound();
+
+            b.Name = book.Name;
+            b.Author = book.Author;
+            b.ISBN = book.ISBN;
+
+            return new ObjectResult(b);
+        }
+
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            int removed = _books.RemoveAll(b => b.ID == id);
-            if (removed == 0)
+            if (_books.RemoveAll(b => b.ID == id) == 0)
                 return NotFound();
             return Ok();
         }
